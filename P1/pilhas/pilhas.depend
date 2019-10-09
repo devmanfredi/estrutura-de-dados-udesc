@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1569207917 source:c:\users\master-pc\documents\tads\eda\pilhas\pilha.c
+	"Pilha.h"
+	<stdio.h>
+	<stdlib.h>
+
+1569208025 c:\users\master-pc\documents\tads\eda\pilhas\pilha.h
+

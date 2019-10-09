@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1568944330 source:c:\users\master-pc\documents\tads\eda\filas\main.c
+	<stdio.h>
+	<stdlib.h>
+	"fila.h"
+
+1568944254 source:c:\users\master-pc\documents\tads\eda\filas\fila.c
+	"fila.h"
+	<stdlib.h>
+	<stdio.h>
+
+1568927390 c:\users\master-pc\documents\tads\eda\filas\fila.h
+
