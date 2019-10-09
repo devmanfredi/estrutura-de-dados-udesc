@@ -16,11 +16,11 @@ int lista_vazia(Lista *l) {
 int insereNoInicio(Lista *l, void *info) {
     Elemento *p = malloc(sizeof(Elemento));
     if (p == NULL)
-        return 0; //falta memÃ³ria
+        return 0; //falta memória
     p->info = malloc(l->tamInfo);
     if (p->info == NULL) {
         free(p);
-        return 0; //falta memÃ³ria
+        return 0; //falta memória
     }
     memcpy(p->info, info, l->tamInfo);
     p->proximo = l->cabeca;
