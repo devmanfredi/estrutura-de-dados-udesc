@@ -1,12 +1,12 @@
 # depslib dependency file v1.0
-1570589831 source:c:\users\master-pc\documents\tads\eda\p2\listaencadeada\lista.c
+1572111230 source:c:\users\master-pc\documents\tads\eda\p2\listaencadeada\lista.c
 	<string.h>
 	<stdlib.h>
 	<stdio.h>
 	"lista.h"
 
-1572107153 c:\users\master-pc\documents\tads\eda\p2\listaencadeada\lista.h
+1572108915 c:\users\master-pc\documents\tads\eda\p2\listaencadeada\lista.h
 
-1572107218 source:c:\users\master-pc\documents\tads\eda\p2\listaencadeada\main.c
+1572110941 source:c:\users\master-pc\documents\tads\eda\p2\listaencadeada\main.c
 	"lista.h"
 

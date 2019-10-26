@@ -3,7 +3,7 @@
 
 typedef struct ele {
     void *info;
-    struct ele *proximo;
+    struct ele *proximo;//ultimo elemento aponta para null
 }Elemento;
 
 typedef struct {
@@ -11,8 +11,9 @@ typedef struct {
     int tamInfo, qtd;
 }Lista;
 
+//ASPECTOS FUNCIONAIS
 void inicializa_lista(Lista *l, int t);
-int lista_vazia(Lista *l);
+int lista_vazia(Lista l);
 int insereNoInicio(Lista *l, void *info);
 int removeDoInicio(Lista *l, void *info);
 int insereNoFim(Lista *l, void *info);
