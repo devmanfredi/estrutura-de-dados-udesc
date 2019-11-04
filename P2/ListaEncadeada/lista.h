@@ -1,15 +1,17 @@
 #define ERROLISTA_VAZIA -1
 #define ERRO_POS_INVALIDA -2
 
-typedef struct ele {
+typedef struct ele
+{
     void *info;
     struct ele *proximo;//ultimo elemento aponta para null
-}Elemento;
+} Elemento;
 
-typedef struct {
+typedef struct
+{
     Elemento *cabeca;
     int tamInfo, qtd;
-}Lista;
+} Lista;
 
 //ASPECTOS FUNCIONAIS
 void inicializa_lista(Lista *l, int t);

@@ -1,23 +1,23 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "lista.h"
+#include "ListaDupla.h"
 
-void inicializa_lista(Lista *l, int t)
+void inicializa_lista(LDE *l, int t)
 {
     l->cabeca = NULL;
     l->tamInfo = t;
     l->qtd = 0;
 }
 
-int lista_vazia(Lista l)
+int lista_vazia(LDE l)
 {
-    return l.cabeca == NULL;
+    return l.cabeca == NULL
 }
 
-Elemento* aloca_ele(void *x, int t)
+EleDuplo* aloca_ele(void *x, int t)
 {
-    Elemento *p = malloc(sizeof(Elemento));
+    EleDuplo *p = malloc(sizeof(EleDuplo));
     if (!p)
         return NULL; // falta memória
     p->info = malloc(t);
@@ -30,63 +30,68 @@ Elemento* aloca_ele(void *x, int t)
     return p;
 }
 
-int insereNoInicio(Lista *l, void *info)
+int insereNoInicio(LDE *l, void *info)
 {
-    Elemento *p = aloca_ele(info, l->tamInfo);
-    p->proximo = l->cabeca;
+    EleDuplo *p = aloca_ele(info, l->tamInfo);
+    if(p==NULL)
+        return 0;
+
+    p->suc = l->cabeca;
     l->cabeca = p;
+    p->ant = NULL;
+    if(p->suc != NULL)
+        p->suc->ant = p;
     l->qtd++;
     return 1; // sucesso
 }
 
-int removeDoInicio(Lista *l, void *info)
+int removeDoInicio(LDE *l, void *info)
 {
     if (lista_vazia(*l))
         return ERROLISTA_VAZIA;
-    Elemento *p = l->cabeca;
+    EleDuplo *p = l->cabeca;
     memcpy(info, p->info, l->tamInfo);
-    l->cabeca = p->proximo;
-    l->qtd--;
+    l->cabeca = p->suc;
     free(p->info);
     free(p);
+    l->qtd--;
+    if(l->cabeca != NULL)
+        l->cabeca->ant = NULL;
     return 1; // sucesso
 }
 
-int insereNoFim(Lista *l, void *info)
+int insereNoFim(LDE *l, void *info)
 {
-    Elemento *p = aloca_ele(info, l->tamInfo);
-    p->proximo = NULL;
     if (lista_vazia(*l))
     {
         insereNoInicio(l, info);
+        EleDuplo *p = l->cabeca;
+        while(p->suc != NULL)
+            p=p->suc;
+        EleDuplo *novo = aloca_ele(info,l->tamInfo);
+        if(novo == NULL)
+            return 0;
+        novo->suc = 0;
+        p->suc = novo;
+        novo->ant = p;
+        l->qtd++;
+        return 1; // sucesso
     }
-    else
-    {
-        Elemento *q = l->cabeca;
-        while (q->proximo != NULL)
-        {
-            q = q->proximo;
-        }
-        memcpy(p->info,info,l->tamInfo);
-        p->proximo = NULL;
-        q->proximo = p;
-    }
-    l->qtd++;
-    return 1; // sucesso
+
 }
 
-int removeDoFim(Lista *l, void *info)
+int removeDoFim(LDE *l, void *info)
 {
     if (lista_vazia(*l))
         return ERROLISTA_VAZIA;
     if (l->cabeca->proximo == NULL)
         return removeDoInicio(l, info);
-    Elemento *p = l->cabeca;
+    EleDuplo *p = l->cabeca;
     while (p->proximo->proximo != NULL)   // penúltimo
     {
         p = p->proximo;
     }
-    Elemento *ultimo = p->proximo;
+    EleDuplo *ultimo = p->proximo;
     memcpy(info, ultimo->info, l->tamInfo);
     free(ultimo->info);
     free(ultimo);
@@ -95,24 +100,30 @@ int removeDoFim(Lista *l, void *info)
     return 1; // sucesso
 }
 
-int insereNaPos(Lista *l, void *info, int pos)
+int insereNaPos(LDE *l, void *info, int pos)
 {
     if (pos < 0 || pos > l->qtd)
         return ERRO_POS_INVALIDA;
     if (pos == 0)
         return insereNoInicio(l, info);
-    Elemento *p = l->cabeca;
-    int cont;
-    for (cont = 0; cont < pos-1; cont++)
-        p = p->proximo;
-    Elemento *novo = aloca_ele(info, l->tamInfo);
-    novo->proximo = p->proximo;
-    p->proximo = novo;
+    EleDuplo *p = l->cabeca;
+    int cont = 0;
+    while(cont < pos-1)
+        p = p->suc;
+        cont++;
+    EleDuplo *novo = aloca_ele(info,l->tamInfo);
+    if(novo == NULL)
+        return 0;
+    novo->suc = p->suc;
+    p->suc = novo;
+    novo->ant = p;
+    if(novo->suc != NULL)
+        novo->suc->ant = novo;
     l->qtd++;
     return 1; // sucesso
 }
 
-int removeDaPos(Lista *l, void *info, int pos)
+int removeDaPos(LDE *l, void *info, int pos)
 {
     if (lista_vazia(*l))
         return ERROLISTA_VAZIA;
@@ -120,11 +131,11 @@ int removeDaPos(Lista *l, void *info, int pos)
         return ERRO_POS_INVALIDA;
     if (pos == 0)
         return removeDoInicio(l, info);
-    Elemento *p = l->cabeca;
+    EleDuplo *p = l->cabeca;
     int cont;
     for (cont = 0; cont < pos-1; cont++)
         p = p->proximo;
-    Elemento *x = p->proximo;
+    EleDuplo *x = p->proximo;
     p->proximo = x->proximo;
     memcpy(info, x->info, l->tamInfo);
     free(x->info);
@@ -133,24 +144,33 @@ int removeDaPos(Lista *l, void *info, int pos)
     return 1; // sucesso
 }
 
-int modificaNaPos(Lista *l, void *info, int pos)
+int modificaNaPos(LDE *l, void *info, int pos)
 {
-    if (lista_vazia(*l))
+    if(lista_vazia(*l))
         return ERROLISTA_VAZIA;
-    if (pos < 0 || pos >= l->qtd)
+    if(pos < 0 || pos >= l->qtd)
         return ERRO_POS_INVALIDA;
-    Elemento *p = l->cabeca;
-    int cont;
-    for (cont = 0; cont < pos; cont++)
-        p = p->proximo;
-    memcpy(p->info, info, l->tamInfo);
+    if(pos == 0)
+        return removeDoInicio(l,info);
+    EleDuplo *p = l->cabeca;
+    int cont = 0;
+    while(cont < pos-1)
+        cont++;
+        p = p->suc;
+    EleDuplo *x = p->suc;
+    p->suc = x->suc;
+    if(p->suc != NULL)
+        p->suc->ant = p;
+    memcpy(info,x->info,l->tamInfo);
+    free(x);
+    l->qtd--;
     return 1; // sucesso
 }
 
 
-int insereNaOrdem(Lista *l, void *info, int (*comp) (void *, void *))
+int insereNaOrdem(LDE *l, void *info, int (*comp) (void *, void *))
 {
-    Elemento *p = l->cabeca;
+    EleDuplo *p = l->cabeca;
     int cont = 0;
     while (p != NULL && comp(info, p->info) > 0)
     {
@@ -160,14 +180,14 @@ int insereNaOrdem(Lista *l, void *info, int (*comp) (void *, void *))
     return insereNaPos(l, info, cont);
 }
 
-void mostra_lista(Lista l, void (*mostra) (void *))
+void mostra_lista(LDE l, void (*mostra) (void *))
 {
     if (lista_vazia(l))
         printf("\nLista vazia!\n");
     else
     {
         printf("\nDados da lista:\n");
-        Elemento *p = l.cabeca;
+        EleDuplo *p = l.cabeca;
         int count =0;
         while (p != NULL)
         {
@@ -179,13 +199,13 @@ void mostra_lista(Lista l, void (*mostra) (void *))
     }
 }
 
-int leNaPos(Lista *l, void *info, int pos)
+int leNaPos(LDE *l, void *info, int pos)
 {
     if (lista_vazia(*l))
         return ERROLISTA_VAZIA;
     if (pos < 0 || pos >= l->qtd)
         return ERRO_POS_INVALIDA;
-    Elemento *p = l->cabeca;
+    EleDuplo *p = l->cabeca;
     int cont;
     for (cont = 0; cont < pos; cont++)
         p = p->proximo;
@@ -193,9 +213,9 @@ int leNaPos(Lista *l, void *info, int pos)
     return 1; // sucesso
 }
 
-void limpa_lista(Lista *l)
+void limpa_lista(LDE *l)
 {
-    Elemento *p = l->cabeca, *q;
+    EleDuplo *p = l->cabeca, *q;
     while (p)
     {
         q = p;

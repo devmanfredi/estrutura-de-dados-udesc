@@ -4,7 +4,8 @@
 void mostra_float(void *x);
 int compara_float(void *x, void *y);
 
-int main() {
+int main()
+{
     printf("\t_=_=_=_= LISTA ENCADEADA _=_=_=_=_=\t\n");
     Lista l;
     float x = 123.8;
@@ -19,13 +20,17 @@ int main() {
     return 0;
 }
 
-void mostra_float(void *x) {
+void mostra_float(void *x)
+{
     printf("%f\n", *(float*) x);
 }
 
-int compara_float(void *x, void *y) {
+int compara_float(void *x, void *y)
+{
     float *a = x, *b = y;
-    if (*a > *b) return 1;
-    if (*a < *b) return -1;
+    if (*a > *b)
+        return 1;
+    if (*a < *b)
+        return -1;
     return 0;
 }
